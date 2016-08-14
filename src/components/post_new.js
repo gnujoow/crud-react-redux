@@ -1,10 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, protoTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { Link } from 'react-router';
 
 import { createPost } from '../actions/index';
 
 class PostNew extends Component {
+  static contextTypes = {
+    router: protoTypes.object
+  }
+
   render () {
     const { fields: {title, categories, content}, handleSubmit } = this.props;
 
@@ -58,10 +62,8 @@ function validate(values) {
   return errors;
 }
 
-
 // connect: first argument is mapToStateToProps, 2nd is mapDispatchToProps
 // reduxForm : 1st is form config 2nd is mapToStateToProps 3rd is mapDispatchToProps
-
 export default reduxForm({
   form: 'PostNewForm',
   fields: ['title', 'categories', 'content' ],
