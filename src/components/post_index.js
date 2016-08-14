@@ -1,5 +1,15 @@
 import React from 'react';
 
-export default () => {
-  return <div> 블로그 포스트 목록 </div>
-};
+class PostIndex extends React.Component {
+  componentWillMount(){
+    console.log('this would be a good time to load data');
+  }
+  render() {
+    return (
+      <div>List of blog posts</div>
+    );
+  }
+}
+
+
+export default PostIndex;
