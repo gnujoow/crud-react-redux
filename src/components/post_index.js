@@ -16,7 +16,7 @@ class PostIndex extends React.Component {
             글쓰기
           </Link>
         </div>
-        List of blog posts
+        블로그 리스트
       </div>
     );
   }
