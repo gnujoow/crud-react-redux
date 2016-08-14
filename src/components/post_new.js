@@ -1,11 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { reduxForm } from 'redux-form';
 
-class PostNew extends React.Component {
-  render (){
+class PostNew extends Component {
+  render () {
+    const { fields: {title, categories, content}, handleSubmit } = this.props;
+    console.log(title);
+
     return (
-      <div>입력 폼</div>
+      <form onSubmit={handleSubmit}>
+        <h3>포스트 만들기 </h3>
+        <div className="form-group">
+          <label>제목</label>
+          <input type="text" className="form-control" />
+        </div>
+
+        <div className="form-group">
+          <label>분류</label>
+          <input type="text" className="form-control" />
+        </div>
+
+        <div className="form-group">
+          <label>내용</label>
+          <textarea className="form-control" />
+        </div>
+
+        <button type="submit" className="btn btn-primary">보내기</button>
+      </form>
     );
   }
 }
 
-export default PostNew;
+// user types something in.. record it on application state
+export default reduxForm({
+  form: 'PostNewForm',
+  fields: ['title', 'categories', 'content' ]
+})(PostNew);
