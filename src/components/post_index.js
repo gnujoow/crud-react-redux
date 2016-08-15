@@ -8,6 +8,17 @@ class PostIndex extends React.Component {
     this.props.fetchPosts();
   }
 
+  renderPosts() {
+    return this.props.posts.map((post) => {
+      return (
+        <li className="list-group-item" key={post.id}>
+          <span className="pull-md-right">{post.categories}</span>
+          <strong>{post.title}</strong>
+        </li>
+      );
+    });
+  }
+
   render() {
     return (
       <div>
@@ -16,10 +27,17 @@ class PostIndex extends React.Component {
             글쓰기
           </Link>
         </div>
-        블로그 리스트
+        <h3>블로그 리스트</h3>
+        <ul className="list-group">
+          {this.renderPosts()}
+        </ul>
       </div>
     );
   }
 }
 
-export default connect(null, { fetchPosts })(PostIndex);
+function mapStateToProps(state){
+  return { posts: state.posts.all };
+}
+
+export default connect(mapStateToProps, { fetchPosts })(PostIndex);
