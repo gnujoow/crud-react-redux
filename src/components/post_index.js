@@ -14,6 +14,7 @@ class PostIndex extends React.Component {
         <li className="list-group-item" key={post.id}>
           <Link to={"posts/" + post.id}>
             <span className="pull-md-right">{post.categories}</span>
+            <p>{post.id}</p>
             <strong>{post.title}</strong>
           </Link>
         </li>
