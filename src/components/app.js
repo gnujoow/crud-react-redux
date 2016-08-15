@@ -4,7 +4,8 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        React simple starter
+        여기에 네비게이션바가 들어가겠지
+        <hr />
         {this.props.children}
       </div>
     );
