@@ -1,47 +1,64 @@
-import React, { Component, protoTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
+import { createPost } from '../actions/index';
 import { Link } from 'react-router';
 
-import { createPost } from '../actions/index';
-
-class PostNew extends Component {
+class PostsNew extends Component {
+  // React-Router context. Don't abuse it, as the API is in flux and may change
   static contextTypes = {
-    router: protoTypes.object
+    // React will traverse up to parent components looking for a property
+    // called this.props.router. It will find it in routes.js (in our case).
+    router: PropTypes.object
+  };
+
+  onSubmit(props) {
+    this.props.createPost(props).then(() => {
+        // blog post has been created. navigate to index.
+        // We navigate by calling this.context.router.push with the new
+        // path to navigate to
+        this.context.router.push('/');
+      });
   }
 
-  render () {
-    const { fields: {title, categories, content}, handleSubmit } = this.props;
+  render() {
+    const { fields: { title, categories, content }, handleSubmit } = this.props;
+    // const { handleSubmit } = this.props;
+    // The above is equivalent to:
+    // const handleSubmit = this.props.handleSubmit;
+    // const title = this.props.fields.title
 
     return (
-      <form onSubmit={handleSubmit(this.props.createPost)}>
-        <h3>포스트 만들기 </h3>
-
-        <div className={`form-group ${title.touched && title.error ? 'has-danger' : ''}`} >
-          <label>제목</label>
+      /* <form onSubmit={handleSubmit(this.props.createPost)}> */
+      /* The above code was valid before having onSubmit as a separate function */
+      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+        <h3>Create a new post</h3>
+        <div className={`form-group ${title.touched && title.invalid ? 'has-danger' : ''}`}>
+          <label>Title</label>
+          { /* The ...title: expands/deconstructs title so every property in title becomes part of the input */ }
           <input type="text" className="form-control" {...title} />
-          <div className="text-help form-control-label">
-            {title.touched ? title.error : '' }
+          <div className="text-help">
+            {title.touched ? title.error : ''}
           </div>
         </div>
 
-        <div className={`form-group ${categories.touched && categories.error ? 'has-danger' : ''}`} >
-          <label>분류</label>
-          <input type="text" className="form-control" {...categories}/>
-          <div className="text-help form-control-label">
-            {categories.touched ? categories.error : '' }
+        <div className={`form-group ${categories.touched && categories.invalid ? 'has-danger' : ''}`}>
+          <label>Categories</label>
+          <input type="text" className="form-control" {...categories }/>
+          <div className="text-help">
+            {categories.touched ? categories.error : ''}
           </div>
         </div>
 
-        <div className={`form-group ${content.touched && content.error ? 'has-danger' : ''}`} >
-          <label>내용</label>
+        <div className={`form-group ${content.touched && content.invalid ? 'has-danger' : ''}`}>
+          <label>Content</label>
           <textarea className="form-control" {...content} />
-          <div className="text-help form-control-label">
-            {content.touched ? content.error : '' }
+          <div className="text-help">
+            {content.touched ? content.error : ''}
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">보내기</button>
-        <Link to="/" className="btn btn-danger">취소</Link>
+        <button type="submit" className="btn btn-primary">Submit</button>
+        <Link to="/" className="btn btn-danger">Cancel</Link>
       </form>
     );
   }
@@ -50,22 +67,34 @@ class PostNew extends Component {
 function validate(values) {
   const errors = {};
 
-  if(!values.title){
-    errors.title = '제목을 입력하세요';
+  if (!values.title) {
+    errors.title = 'Enter a username';
   }
-  if(!values.categories){
-    errors.categories = '분류를 입력하세요';
+
+  if (!values.categories) {
+    errors.categories = 'Enter categories';
   }
-  if(!values.content){
-    errors.content = '내용을 입력하세요';
+
+  if (!values.content) {
+    errors.content = 'Enter some content';
   }
+
   return errors;
 }
 
-// connect: first argument is mapToStateToProps, 2nd is mapDispatchToProps
-// reduxForm : 1st is form config 2nd is mapToStateToProps 3rd is mapDispatchToProps
+// In JS, a 2nd parenthesis means that the 1st funciton returns another function
+// And that 2nd function is called immediately
+// http://stackoverflow.com/questions/18234491/two-sets-of-parentheses-after-function-call
+
+// Redux Form is injecting some members into the component props that we can
+// access, like this.props.handleSubmit
+
+// Redux Form has the exact same behavior as connect.
+
+// connect: 1st argument is mapStateToProps, 2nd is mapDispatchToProps
+// reduxForm: 1st arg is form config, 2nd is mapStateToProps, 3rd is mapDispatchToProps
 export default reduxForm({
-  form: 'PostNewForm',
-  fields: ['title', 'categories', 'content' ],
+  form: 'PostsNewForm',
+  fields: ['title', 'categories', 'content'],
   validate
-},null, { createPost })(PostNew);
+}, null, { createPost })(PostsNew);
